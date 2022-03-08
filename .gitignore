@@ -1,0 +1,16 @@
+# Build
+dist
+build
+
+# IDE
+.idea
+.vscode
+
+# Environ
+.env
+.env.dev(elop)
+.env.prod(uction)
+
+# Dependency
+node_modules
+
