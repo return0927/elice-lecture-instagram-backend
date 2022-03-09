@@ -1,7 +1,13 @@
+import { IsNotEmpty, IsString } from 'class-validator';
+
 export class NewPostDto {
+  @IsString()
+  @IsNotEmpty()
   content!: string;
 
   attachment!: Buffer;
 
-  authorId: number;
+  @IsString()
+  @IsNotEmpty()
+  authorName: string;
 }
