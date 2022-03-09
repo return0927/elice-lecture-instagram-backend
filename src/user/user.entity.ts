@@ -1,8 +1,7 @@
-import {
- Column, Entity, OneToMany, PrimaryGeneratedColumn
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IsEmail, IsString } from 'class-validator';
 import { PostEntity } from '../post/post.entity';
+import { CommentEntity } from '../comment/comment.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -28,6 +27,9 @@ export class UserEntity {
   })
   password!: string;
 
-  // @OneToMany(() => PostEntity, (p) => p.author)
-  // posts!: PostEntity[];
+  @OneToMany(() => PostEntity, (p) => p.author)
+  posts!: PostEntity[];
+
+  @OneToMany(() => CommentEntity, (c) => c.author)
+  comments!: CommentEntity[];
 }

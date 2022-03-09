@@ -3,10 +3,12 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
 import { UserEntity } from '../user/user.entity';
+import { CommentEntity } from '../comment/comment.entity';
 
 @Entity('posts')
 export class PostEntity {
@@ -15,13 +17,18 @@ export class PostEntity {
 
   @Column()
   @IsString()
+  @IsNotEmpty()
+  @Length(1, 100)
   content!: string;
 
   @Column('longblob')
   attachment?: Buffer;
 
-  // @ManyToOne(() => UserEntity, (u) => u.posts)
-  // author!: UserEntity;
+  @ManyToOne(() => UserEntity, (u) => u.posts)
+  author!: UserEntity;
+
+  @OneToMany(() => CommentEntity, (comment) => comment.post)
+  comments!: CommentEntity[];
 
   @Column()
   authorName: string;
