@@ -14,7 +14,6 @@ import { Express, Response } from 'express';
 import { Readable } from 'stream';
 import { GetPostDto } from './get-post.dto';
 import { PostService } from './post.service';
-import { NewPostDto } from './new-post.dto';
 
 @Controller('post')
 export class PostController {

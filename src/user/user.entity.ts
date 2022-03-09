@@ -1,4 +1,6 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+ Column, Entity, OneToMany, PrimaryGeneratedColumn
+} from 'typeorm';
 import { IsEmail, IsString } from 'class-validator';
 import { PostEntity } from '../post/post.entity';
 import { CommentEntity } from '../comment/comment.entity';
