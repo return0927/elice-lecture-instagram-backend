@@ -83,4 +83,22 @@ export class PostController {
     const post = await this.postService.getPostRaw(id);
     return this.commentService.getComments(post);
   }
+
+  @ApiTags('comment')
+  @Post('/:id/comment')
+  @ApiNotFoundResponse({
+    description: '게시글 혹은 작성자가 존재하지 않는 경우',
+  })
+  @ApiCreatedResponse({
+    description: '생성된 댓글 객체',
+    type: CommentDto,
+  })
+  async createComment(
+    @Param('id') id: number,
+    @Body() body: CreateCommentDto,
+    @Res() res: Response,
+  ): Promise<CommentDto> {
+    const post = await this.postService.getPostRaw(id);
+    return this.commentService.createComment(post, body);
+  }
 }
