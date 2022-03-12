@@ -8,15 +8,24 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, Response } from 'express';
 import { Readable } from 'stream';
 import { GetPostDto } from './get-post.dto';
 import { PostService } from './post.service';
 import { CommentService } from '../comment/comment.service';
+import { CreateCommentDto } from '../comment/create-comment.dto';
+import { CommentDto } from '../comment/comment.dto';
 
 @Controller('post')
+@ApiTags('post')
 export class PostController {
   constructor(
     private postService: PostService,
@@ -29,6 +38,9 @@ export class PostController {
   }
 
   @Get('/:id')
+  @ApiNotFoundResponse({
+    description: '게시글이 존재하지 않는 경우',
+  })
   getPost(@Param('id') id: number): Promise<GetPostDto> {
     return this.postService.getPost(id);
   }
@@ -64,6 +76,9 @@ export class PostController {
   }
 
   @Get('/:id/attachment')
+  @ApiNotFoundResponse({
+    description: '게시글이 존재하지 않는 경우',
+  })
   async getAttachment(@Param('id') id: number, @Res() res: Response) {
     const attachment = await this.postService.getAttachment(id);
 
@@ -78,7 +93,11 @@ export class PostController {
     stream.pipe(res);
   }
 
-  @Get('/:id/comments')
+  @ApiTags('comment')
+  @Get('/:id/comment')
+  @ApiNotFoundResponse({
+    description: '게시글이 존재하지 않는 경우',
+  })
   async getComments(@Param('id') id: number) {
     const post = await this.postService.getPostRaw(id);
     return this.commentService.getComments(post);
