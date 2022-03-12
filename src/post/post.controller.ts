@@ -17,7 +17,10 @@ import { PostService } from './post.service';
 
 @Controller('post')
 export class PostController {
-  constructor(private postService: PostService) {}
+  constructor(
+    private postService: PostService,
+    private commentService: CommentService,
+  ) {}
 
   @Get('/')
   getAllPosts(): Promise<GetPostDto[]> {
@@ -40,9 +43,9 @@ export class PostController {
           type: 'string',
           description: '게시글 내용',
         },
-        authorName: {
-          type: 'string',
-          description: '작성자 이름',
+        authorId: {
+          type: 'number',
+          description: '작성자 ID',
         },
         attachment: {
           type: 'string',

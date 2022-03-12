@@ -3,5 +3,5 @@ export class GetPostDto {
 
   content: string;
 
-  authorName: string;
+  authorId: number;
 }

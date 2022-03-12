@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class NewPostDto {
   @IsString()
@@ -7,7 +7,6 @@ export class NewPostDto {
 
   attachment!: Buffer;
 
-  @IsString()
-  @IsNotEmpty()
-  authorName: string;
+  @IsNumber()
+  authorId: number;
 }

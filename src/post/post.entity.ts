@@ -30,9 +30,6 @@ export class PostEntity {
   @OneToMany(() => CommentEntity, (comment) => comment.post)
   comments!: CommentEntity[];
 
-  @Column()
-  authorName: string;
-
   @CreateDateColumn()
   createdAt!: Date;
 }
