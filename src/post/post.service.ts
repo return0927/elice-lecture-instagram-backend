@@ -36,7 +36,17 @@ export class PostService {
   }
 
   async getPostRaw(id: number): Promise<PostEntity> {
-    const post = this.postRepository.findOne({ id });
+    const post = await this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.author', 'user')
+      .leftJoinAndSelect(
+        'post.comments',
+        'comment',
+        'comment.deletedAt IS NULL',
+      )
+      .where({ id })
+      .getOne();
+
     if (!post) throw new NotFoundException();
     return post;
   }
