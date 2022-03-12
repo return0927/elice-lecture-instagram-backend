@@ -16,20 +16,29 @@ export class PostService {
   ) {}
 
   async getAllPosts(): Promise<GetPostDto[]> {
-    const posts = await this.postRepository.find();
+    const posts = await this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.author', 'user')
+      .limit(100)
+      .getMany();
 
     return posts.map((v) => {
-      const { attachment, ...resources } = v;
-      return resources;
+      const { attachment, author, ...resources } = v;
+      return { ...resources, authorId: author.id };
     });
   }
 
   async getPost(id: number): Promise<GetPostDto> {
-    const post = await this.postRepository.findOne({ id });
-    if (!post) throw new NotFoundException();
+    const post = await this.getPostRaw(id);
 
-    const { attachment, ...resources } = post;
-    return resources;
+    const { attachment, author, ...resources } = post;
+    return { ...resources, authorId: author.id };
+  }
+
+  async getPostRaw(id: number): Promise<PostEntity> {
+    const post = this.postRepository.findOne({ id });
+    if (!post) throw new NotFoundException();
+    return post;
   }
 
   async getAttachment(id: number): Promise<Buffer> {
@@ -43,19 +52,19 @@ export class PostService {
     dto: NewPostDto,
     file: Express.Multer.File,
   ): Promise<GetPostDto> {
-    // const user = await this.userService.getById(dto.authorId);
-    // console.dir(user);
-    // if (!user) {
-    //   throw new NotFoundException(`Cannot find user with id ${dto.authorId}`);
-    // }
+    const user = await this.userService.getById(dto.authorId);
+    if (!user) {
+      throw new NotFoundException(`Cannot find user with id ${dto.authorId}`);
+    }
 
     const savingPost = {
       ...dto,
+      author: user,
       attachment: Buffer.from(file.buffer),
     };
     const newPost = await this.postRepository.save(savingPost);
-    const { attachment, ...detached } = newPost;
+    const { attachment, author, ...detached } = newPost;
 
-    return detached;
+    return { ...detached, authorId: author.id };
   }
 }

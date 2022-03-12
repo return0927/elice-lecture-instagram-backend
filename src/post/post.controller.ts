@@ -14,6 +14,7 @@ import { Express, Response } from 'express';
 import { Readable } from 'stream';
 import { GetPostDto } from './get-post.dto';
 import { PostService } from './post.service';
+import { CommentService } from '../comment/comment.service';
 
 @Controller('post')
 export class PostController {
@@ -75,5 +76,11 @@ export class PostController {
       'Content-Length': attachment.length,
     });
     stream.pipe(res);
+  }
+
+  @Get('/:id/comments')
+  async getComments(@Param('id') id: number) {
+    const post = await this.postService.getPostRaw(id);
+    return this.commentService.getComments(post);
   }
 }
